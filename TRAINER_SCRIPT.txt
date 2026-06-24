@@ -1,0 +1,29 @@
+Trainer Explanation Script
+
+Students, Kali Linux VirtualBox lo copy-paste issue common ga vastundi.
+
+Reason:
+VirtualBox lo Windows host and Kali guest madhya clipboard work avvali ante Guest Additions services properly run avvali. Sometimes package install ayina, background device files like /dev/vboxguest and /dev/vboxuser create avvavu. Appudu VBoxClient start avvadu, so copy-paste fail avuthundi.
+
+Manam manually 20 commands type cheyyakunda one script use chestham.
+
+Before running script, VirtualBox menu lo set cheyyandi:
+
+Devices -> Shared Clipboard -> Bidirectional
+Devices -> Drag and Drop -> Bidirectional
+
+Then Kali terminal lo:
+
+curl -fsSL "RAW_GITHUB_URL_HERE" -o fix-vbox-clipboard.sh
+bash fix-vbox-clipboard.sh
+
+Script PASS/FAIL format lo result chupisthundi.
+
+If script final lo expected text chupisthe, Windows Notepad open chesi Ctrl + V press cheyyandi.
+
+If paste avuthunte problem solved.
+
+Important shortcuts:
+Kali terminal copy is Ctrl + Shift + C.
+Kali terminal paste is Ctrl + Shift + V.
+Normal applications lo Ctrl + C and Ctrl + V.
