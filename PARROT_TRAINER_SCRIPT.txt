@@ -1,0 +1,125 @@
+Parrot Security OS - Trainer Explanation Script
+
+Students, Parrot Security OS VirtualBox lo kuda copy-paste issue Kali laage common ga vastundi.
+Same problem, same fix idea. Just script peru different: fix-parrot-vbox-clipboard.sh
+
+------------------------------------------------------------
+1. Why Parrot copy-paste fails in VirtualBox
+------------------------------------------------------------
+Windows host and Parrot guest madhya clipboard share avvali ante,
+VirtualBox "Guest Additions" services properly run avvali.
+
+Chala sార్లు package install ayina, background device files like
+/dev/vboxguest and /dev/vboxuser create avvavu, leda VBoxClient service
+start avvadu. Appudu copy-paste fail avuthundi.
+
+Manam manually 15-20 commands type cheyyakunda, oka script tho anni
+checks + fixes auto ga chestham.
+
+------------------------------------------------------------
+2. What Guest Additions does
+------------------------------------------------------------
+Guest Additions ante VirtualBox guest (Parrot) lo install ayye chinna helper software.
+Idi:
+- Clipboard sharing (copy-paste)
+- Drag and drop
+- Better screen size / mouse
+- Shared folders
+ఇవి anni enable chestundi.
+
+Guest Additions lekapothe, host and guest madhya clipboard "bridge" undadu.
+
+------------------------------------------------------------
+3. Why /dev/vboxguest and /dev/vboxuser are important
+------------------------------------------------------------
+Ivi rendu special device files.
+
+VBoxClient (clipboard service) ee device files dwara VirtualBox tho
+matladuthundi. Anukondi ivi rendu "doors" laantivi - guest and host madhya
+data ee doors gunda velthundi.
+
+Ee files missing ayithe, VBoxClient start ayina kuda clipboard work avvadu.
+Script ee files ni mknod tho create chesi, permissions (666) set chesi,
+reboot tarvata kuda automatic ga vache laaga systemd service pedutundi.
+
+------------------------------------------------------------
+4. Why VBoxClient is needed
+------------------------------------------------------------
+VBoxClient ante guest lo run ayye background program.
+- VBoxClient --clipboard  -> copy-paste handle chestundi
+- VBoxClient --draganddrop -> drag and drop handle chestundi
+
+Idi run avvakapothe clipboard sync avvadu. Script ee process ni restart
+chesi, login ప్రతిసారి auto start ayye laaga autostart entry kuda pedutundi.
+
+------------------------------------------------------------
+5. Why students should NOT run with sudo bash
+------------------------------------------------------------
+"sudo bash fix-parrot-vbox-clipboard.sh" run cheste, script root user laaga
+run avuthundi. Appudu:
+- VBoxClient clipboard root user ki link avuthundi, normal user ki kadu.
+- Autostart and HOME folder files wrong place lo create avuthayi.
+- Clipboard normal student session lo work avvadu.
+
+Anduke script start lo check chesi, sudo tho run cheste clear error istundi:
+"Do not run this script using sudo. Run: bash fix-parrot-vbox-clipboard.sh"
+
+Script lopala, avasaram unna steps ki matrame sudo internal ga vadutundi.
+Anduke students simple ga "bash fix-parrot-vbox-clipboard.sh" ane run cheyali.
+
+------------------------------------------------------------
+6. How to explain the fix in class (step by step)
+------------------------------------------------------------
+Step 1: Parrot VM start chesi desktop varaku login avvandi.
+
+Step 2: VirtualBox top menu lo set cheyandi (idi host-side, script change cheyaledu):
+   Devices -> Shared Clipboard -> Bidirectional
+   Devices -> Drag and Drop    -> Bidirectional
+
+Step 3: Terminal open chesi, script download cheyandi.
+
+   git clone method:
+   git clone https://github.com/hpot78415-beep/kali-vbox-fix.git
+   cd kali-vbox-fix
+   bash fix-parrot-vbox-clipboard.sh
+
+   OR curl raw method (one line):
+   curl -fsSL "https://raw.githubusercontent.com/hpot78415-beep/kali-vbox-fix/refs/heads/main/fix-parrot-vbox-clipboard.sh" -o fix-parrot-vbox-clipboard.sh && bash fix-parrot-vbox-clipboard.sh
+
+Step 4: Script PASS / WARN / FAIL format lo report chupistundi. Cheppandi:
+   PASS = manchi, WARN = chinna issue, FAIL = aa step fail.
+
+Step 5: Last lo script oka test text chupistundi, udaharanaki:
+   EWB_PARROT_TO_WINDOWS_TEST_123456
+   Windows Notepad open chesi Ctrl + V press cheyandi.
+   Aa text paste ayithe, copy-paste fixed.
+
+------------------------------------------------------------
+7. If normal mode fails (aggressive mode)
+------------------------------------------------------------
+Normal run tho fix avvakapothe:
+   bash fix-parrot-vbox-clipboard.sh --aggressive
+
+Idi conflicting ISO Guest Additions remove chesi, packages purge + reinstall
+chesi, headers/tools install chestundi. Tarvata reboot cheyandi:
+   sudo reboot
+Reboot tarvata normal command malli run cheyandi.
+
+Just check cheyali, changes vద్దు ante:
+   bash fix-parrot-vbox-clipboard.sh --diagnose-only
+
+------------------------------------------------------------
+8. Important shortcuts (class lo cheppali)
+------------------------------------------------------------
+Parrot terminal copy  : Ctrl + Shift + C
+Parrot terminal paste : Ctrl + Shift + V
+Normal applications   : Ctrl + C / Ctrl + V
+
+------------------------------------------------------------
+9. Troubleshooting tip
+------------------------------------------------------------
+Windows -> Parrot work అవుతుంది kani Parrot -> Windows work avvakapothe:
+   Devices -> Shared Clipboard -> Guest to Host
+   Windows Notepad lo Ctrl + V test cheyandi.
+   Tarvata malli:
+   Devices -> Shared Clipboard -> Bidirectional
